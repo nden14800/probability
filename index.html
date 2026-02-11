@@ -668,6 +668,7 @@
                 let targetVal = 0;
                 let explanation = "";
                 let unit = ""; 
+                let isApplied = false; // Add this
 
                 if (type < 0.3) {
                     // Type 1: Dice Roll (Simple Probability)
@@ -757,6 +758,8 @@
                 } else {
                     // Type 4: Independent Events (Product Rule)
                     // Coin and Die. Total 12. P = x/12.
+                    isApplied = true; // Mark this complex one as Applied
+                    
                     const coinTarget = Math.random() < 0.5 ? "表" : "裏";
                     const dieCond = Math.random() < 0.5 ? "偶数" : "3以上";
                     let dieCount = dieCond === "偶数" ? 3 : 4; // 2,4,6 or 3,4,5,6
@@ -778,7 +781,8 @@
                     text: questionText,
                     val: targetVal,
                     explanation: explanation,
-                    unit: unit
+                    unit: unit,
+                    isApplied: isApplied // Add this
                 });
             }
             
@@ -795,8 +799,8 @@
                 const card = document.createElement('div');
                 card.className = "bg-white p-8 rounded-3xl border border-slate-200 shadow-sm transition-all hover:shadow-md dark:bg-slate-800 dark:border-slate-700 relative overflow-hidden";
                 
-                // Logic to show "応用問題" badge if unit exists (simple check for complexity markers if any)
-                const badgeHtml = ''; // Can add logic later if needed
+                // Logic to show "応用問題" badge
+                const badgeHtml = q.isApplied ? `<span class="text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">応用問題</span>` : '';
                 const displayUnit = q.unit || "";
 
                 card.innerHTML = `
