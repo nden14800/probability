@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>確率：不確実性の論理と未来の予測 - 究極のアーカイブ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media', // デバイスのテーマ設定に自動追従
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Inter"', '"Noto Sans JP"', 'sans-serif'],
+                        serif: ['"Noto Serif JP"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <!-- KaTeX JS -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            scroll-behavior: smooth;
+            line-height: 2.4; /* 行間を広げて読みやすく */
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .serif-text {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        /* Slide-out Panel Styles */
+        .quiz-panel {
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            transform: translateX(100%);
+            box-shadow: -10px 0 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz-panel.active {
+            transform: translateX(0);
+        }
+
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .glass-morphism {
+                background: rgba(15, 23, 42, 0.85);
+                border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+            }
+        }
+
+        .content-card {
+            border-radius: 1.5rem;
+            padding: 4rem;
+            margin-bottom: 5rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08);
+        }
+
+        .equation-box {
+            border-left: 6px solid #4f46e5;
+            background: linear-gradient(90deg, rgba(79, 70, 229, 0.05) 0%, transparent 100%);
+            padding: 3rem;
+            margin: 4rem 0;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            border-radius: 0 1rem 1rem 0;
+            font-family: 'Noto Serif JP', serif;
+            letter-spacing: 0.05em;
+            overflow-x: auto;
+        }
+
+        .chapter-title {
+            position: relative;
+            padding-bottom: 1.5rem;
+            margin-bottom: 3.5rem;
+            font-size: 2.25rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.3;
+            border-bottom: 1px solid #cbd5e1;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .chapter-title {
+                border-bottom: 1px solid #334155;
+            }
+        }
+
+        .chapter-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+            width: 80px;
+            height: 4px;
+            background: #4f46e5;
+            border-radius: 2px;
+        }
+
+        .sub-section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 4.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            color: #312e81;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .sub-section-title {
+                color: #e0e7ff;
+            }
+        }
+
+        .sub-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 28px;
+            background: #6366f1;
+            margin-right: 16px;
+            border-radius: 99px;
+        }
+
+        p { margin-bottom: 2.5rem; font-size: 1.125rem; text-align: justify; letter-spacing: 0.04em; color: #334155; }
+        
+        @media (prefers-color-scheme: dark) {
+            p { color: #94a3b8; }
+        }
+
+        .diagram-box {
+            border-radius: 2rem;
+            padding: 4rem 2rem;
+            margin: 5rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .diagram-box {
+                background-color: #0f172a;
+                border: 1px solid #1e293b;
+            }
+        }
+
+        .highlight-text {
+            background: linear-gradient(180deg, transparent 65%, #c7d2fe 65%);
+            font-weight: 700;
+            padding: 0 4px;
+            color: #1e1b4b;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .highlight-text {
+                background: linear-gradient(180deg, transparent 65%, #312e81 65%);
+                color: #e0e7ff;
+            }
+        }
+
+        /* Trivia Box Styling */
+        .trivia-box {
+            border-radius: 1.25rem;
+            padding: 2.5rem 3rem;
+            margin: 4rem 0;
+            position: relative;
+            background-color: #fffbeb;
+            border: 1px solid #fcd34d;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .trivia-box {
+                background-color: rgba(120, 53, 15, 0.1);
+                border: 1px solid rgba(180, 83, 9, 0.4);
+            }
+        }
+
+        .trivia-badge {
+            position: absolute;
+            top: -16px;
+            left: 32px;
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Quiz UI */
+        .quiz-input {
+            transition: all 0.2s ease;
+        }
+        .quiz-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        .correct-answer {
+            background-color: #f0fdf4 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+            box-shadow: 0 0 0 1px #22c55e;
+        }
+        .incorrect-answer {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+            box-shadow: 0 0 0 1px #ef4444;
+        }
+        
+        .feedback-box {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 2rem;
+            border-radius: 1rem;
+            font-size: 1rem;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* KaTeX SVG fix */
+        foreignObject { overflow: visible; }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Math formula specific styling */
+        .math-block {
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 selection:bg-indigo-200 dark:selection:bg-indigo-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-40 glass-morphism">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- Dice/Probability Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-600 dark:text-indigo-400" viewBox="0 0 24 24">
+                     <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
+                     <circle cx="9" cy="9" r="1.5" fill="currentColor" stroke="none"/>
+                     <circle cx="15" cy="15" r="1.5" fill="currentColor" stroke="none"/>
+                     <circle cx="9" cy="15" r="1.5" fill="currentColor" stroke="none"/>
+                     <circle cx="15" cy="9" r="1.5" fill="currentColor" stroke="none"/>
+                </svg>
+                <span class="font-bold text-lg tracking-tight hidden sm:block">Archive: Probability</span>
+            </div>
+            <button id="quizTrigger" class="group bg-slate-900 text-white dark:bg-indigo-600 dark:text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center gap-3 text-sm md:text-base border border-transparent hover:border-indigo-400">
+                <!-- Bootstrap Icon: pencil-square -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="transition-transform group-hover:rotate-12" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                </svg>
+                <span>無限演習ジェネレーター</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 py-24">
+        
+        <!-- Hero Section -->
+        <header class="text-center mb-32">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-300 text-xs font-bold uppercase tracking-widest mb-6">
+                The Logic of Uncertainty
+            </div>
+            <h1 class="text-5xl md:text-8xl font-black mb-10 tracking-tight leading-tight">
+                <span class="hero-gradient">確率</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-400 serif-text max-w-3xl mx-auto leading-loose">
+                神はサイコロを振るのか？<br>
+                不確実な未来を「数」で捉え、混沌の中に秩序を見出す技術。<br>
+                ギャンブルから生まれ、現代物理学とAIを支配する確率論の深淵に迫る。
+            </p>
+        </header>
+
+        <!-- Chapter 1: Essence -->
+        <section class="content-card bg-white border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
+            <h2 class="chapter-title text-slate-900 dark:text-slate-100">第1章：偶然を数値化する</h2>
+            <div class="serif-text">
+                <p>
+                    <strong>確率（Probability）</strong>とは、ある事象が起こる「確からしさ」を0から1の間の数値で表したものである。
+                    明日雨が降るかどうか、サイコロの目が何になるかは誰にもわからない。しかし、無数に試行を繰り返せば、そこには厳格な法則性（大数の法則）が浮かび上がる。
+                    確率は、個別の未来を予言する魔法ではないが、集団としての未来を正確に記述する科学である。
+                </p>
+
+                <p>
+                    確率の定義はシンプルだ。「起こりうるすべての結果（全事象 $U$）」のうち、「注目している結果（事象 $A$）」がどれだけの割合を占めているかである。
+                    ただし、これはすべての結果が「同様に確からしい（等確率である）」場合にのみ成立する。歪んだサイコロでは、この単純な計算は通用しない。
+                </p>
+
+                <div class="diagram-box">
+                    <h4 class="text-lg font-bold mb-12 text-slate-700 dark:text-slate-300 tracking-wider">可能性の空間：サンプルスペース</h4>
+                    
+                    <!-- Probability Venn/Set Diagram Visualization -->
+                    <div class="relative w-full max-w-md h-80 flex items-center justify-center p-4">
+                        
+                        <!-- Universe U -->
+                        <div class="absolute inset-0 bg-slate-100 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-2xl flex items-start justify-start p-4 shadow-inner">
+                            <span class="font-bold text-slate-500 text-sm">全事象 $U$ (Total Outcomes)</span>
+                        </div>
+
+                        <!-- Dots representing outcomes -->
+                        <!-- Arranged: Top row (Odd), Bottom row (Even) for visual grouping -->
+                        <div class="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-4 p-12">
+                            <!-- Outcome 1 (Odd) -->
+                            <div class="flex items-center justify-center"><div class="w-3 h-3 bg-slate-400 rounded-full"></div></div>
+                            <!-- Outcome 3 (Odd) -->
+                            <div class="flex items-center justify-center"><div class="w-3 h-3 bg-slate-400 rounded-full"></div></div>
+                            <!-- Outcome 5 (Odd) -->
+                            <div class="flex items-center justify-center"><div class="w-3 h-3 bg-slate-400 rounded-full"></div></div>
+                            
+                            <!-- Outcome 2 (Even) -->
+                            <div class="flex items-center justify-center z-20"><div class="w-4 h-4 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/50"></div></div>
+                            <!-- Outcome 4 (Even) -->
+                            <div class="flex items-center justify-center z-20"><div class="w-4 h-4 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/50"></div></div>
+                            <!-- Outcome 6 (Even) -->
+                            <div class="flex items-center justify-center z-20"><div class="w-4 h-4 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/50"></div></div>
+                        </div>
+
+                        <!-- Set A (Even Numbers) Circle -->
+                        <!-- Adjusted to cover the bottom row (Even numbers) -->
+                        <div class="absolute w-64 h-24 border-4 border-indigo-500/30 bg-indigo-500/5 rounded-full flex items-center justify-center transform translate-y-12 pointer-events-none">
+                            <span class="absolute -top-6 text-indigo-600 dark:text-indigo-400 font-bold bg-white dark:bg-slate-900 px-2 rounded">事象 $A$ (偶数)</span>
+                        </div>
+
+                    </div>
+
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-8 italic text-center max-w-lg">
+                        全事象（6通り）の中で、偶数が出る事象（2, 4, 6の青い点）は3通り。<br>
+                        確率は、この「領域の広さの比率」として視覚化できる。
+                    </p>
+                </div>
+
+                <div class="equation-box text-slate-900 dark:text-slate-100 shadow-sm">
+                    $$ P(A) = \frac{n(A)}{n(U)} = \frac{\text{特定の起こり方}}{\text{すべての起こり方}} $$
+                </div>
+
+                <h3 class="sub-section-title">0と1の間にある世界</h3>
+                <p>
+                    確率は常に $0 \le P \le 1$ の範囲に収まる。
+                    $P=0$ は「絶対に起こらない（空事象）」、$P=1$ は「必ず起こる（全事象）」を意味する。
+                    天気予報で「降水確率100%」と言えば必ず雨が降るが、「0%」でも稀に降ることがあるのは、気象学における0%が「極めて低い」という意味で使われることがあるからだ（数学的には0なら絶対に降らない）。
+                    私たちの人生のほとんどは、この0と1の間のグレーゾーンにある。
+                </p>
+
+                <!-- Trivia 1 -->
+                <div class="trivia-box">
+                    <span class="trivia-badge">
+                        豆知識：ギャンブルが生んだ数学
+                    </span>
+                    <p class="mb-0 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                        確率論は、17世紀のフランスで賭博師シュヴァリエ・ド・メレが、数学者パスカルに「賭けを中断したときの賭け金の分配方法」について相談したことから始まった。
+                        パスカルとフェルマーが交わした往復書簡によって、「まだ起きていない未来の可能性」を数学的に分配する理論（期待値の概念）が確立された。数学は不純な動機から発展することもあるのだ。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 1.5: Calculation (Expanded) -->
+        <section class="content-card bg-white border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
+            <h2 class="chapter-title text-slate-900 dark:text-slate-100">実践：確率計算の3つの鉄則</h2>
+            <div class="serif-text">
+                <p>
+                    確率の計算で迷子にならないための、基本的かつ強力な3つのツールを紹介する。これらを使い分ければ、複雑な問題もシンプルに解ける。
+                </p>
+
+                <!-- Method 1: Counting -->
+                <div class="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-2xl border border-indigo-100 dark:border-indigo-800 mb-10">
+                    <p class="font-bold text-indigo-900 dark:text-indigo-200 mb-4 flex items-center gap-2">
+                        <span class="bg-indigo-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">1</span>
+                        数え上げの原則：樹形図
+                    </p>
+                    <div class="pl-4 border-l-2 border-indigo-200 dark:border-indigo-700 mb-6">
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                            公式に頼る前に、まずは「もれなく、ダブりなく」数え上げるのが基本。そのための最強ツールが樹形図だ。
+                        </p>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            コインを2回投げる場合：<br>
+                            (表-表), (表-裏), (裏-表), (裏-裏) の4通り。<br>
+                            すべて等確率なら、(表-表)になる確率は $\frac{1}{4}$ である。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Method 2: Complementary Event -->
+                <div class="bg-rose-50 dark:bg-rose-900/20 p-8 rounded-2xl border border-rose-100 dark:border-rose-800 mb-8">
+                    <p class="font-bold text-rose-900 dark:text-rose-200 mb-4 flex items-center gap-2">
+                        <span class="bg-rose-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">2</span>
+                        余事象：「じゃない方」を考える
+                    </p>
+                    <div class="pl-4 border-l-2 border-rose-200 dark:border-rose-700">
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                            「少なくとも1回は表が出る確率」のように、「少なくとも」という言葉が出たら余事象の出番だ。
+                            正面から計算するより、全体（1）から「一度も表が出ない（すべて裏）」確率を引くほうが圧倒的に速い。
+                        </p>
+                        <div class="math-block text-center font-bold text-xl my-4 text-rose-700 dark:text-rose-300">
+                            $$ P(A) = 1 - P(\bar{A}) $$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Method 3: Multiplication Rule -->
+                <div class="bg-emerald-50 dark:bg-emerald-900/10 p-8 rounded-2xl border border-emerald-100 dark:border-emerald-800 mb-8">
+                    <p class="font-bold text-emerald-900 dark:text-emerald-200 mb-4 flex items-center gap-2">
+                        <span class="bg-emerald-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">3</span>
+                        積の法則：独立な事象は掛ける
+                    </p>
+                    <div class="pl-4 border-l-2 border-emerald-200 dark:border-emerald-700">
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                            サイコロを振るのと、コインを投げるのは互いに影響しない（独立試行）。
+                            この場合、「サイコロで1が出て、かつ、コインが表になる確率」は、それぞれの確率の掛け算で求められる。
+                        </p>
+                        <div class="math-block text-center font-bold text-xl my-4 text-emerald-700 dark:text-emerald-300">
+                            $$ P(A \cap B) = P(A) \times P(B) $$
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            例：$\frac{1}{6} \times \frac{1}{2} = \frac{1}{12}$
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Trivia 2 -->
+                <div class="trivia-box">
+                    <span class="trivia-badge">
+                        豆知識：ガチャの確率
+                    </span>
+                    <p class="mb-0 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                        「出現率1%のガチャを100回引けば、必ず当たる」というのは直感的な誤解である。
+                        余事象を使って計算すると、「100回連続で外れる確率」は $(0.99)^{100} \approx 0.366$。
+                        つまり、100回引いても当たる確率は $1 - 0.366 = 63.4\%$ 程度しかない。
+                        確実に当てたければ、確率は直感よりも厳しいことを知っておく必要がある。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 2: History -->
+        <section class="content-card bg-white border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
+            <h2 class="chapter-title text-slate-900 dark:text-slate-100">第2章：ラプラスの悪魔と統計力学</h2>
+            <div class="serif-text text-xl leading-relaxed">
+                <p>
+                    確率は当初ギャンブルの道具だったが、次第に科学の根幹を揺るがす概念へと進化した。
+                    19世紀の数学者ピエール＝シモン・ラプラスは、確率論を「常識を計算に直したもの」と定義し、解析的な基礎を築いた。
+                </p>
+                
+                <h3 class="sub-section-title">決定論と確率論</h3>
+                <p>
+                    ラプラスは、宇宙のすべての原子の位置と運動量を完全に把握できる知性（ラプラスの悪魔）が存在すれば、未来は完全に予測可能であると考えた（決定論）。
+                    彼にとって確率とは、人間が「知らない」ことから生じる主観的な曖昧さに過ぎなかった。
+                    しかし、その後の統計力学の発展により、気体分子のような膨大な数の粒子を扱うには、個々の動きを追うのではなく、確率的に平均値や分布を扱う方が本質的であることが明らかになった。
+                </p>
+
+                <h3 class="sub-section-title">ベイズ統計の逆襲</h3>
+                <p>
+                    一方、トーマス・ベイズ牧師が提唱した「ベイズ確率」は、新しい情報が得られるたびに確率（確信度）を更新していくという考え方である。
+                    長らく主流派（頻度主義）から異端扱いされていたが、現代のAIやスパムメールフィルター、医療診断など、不完全な情報から意思決定を行う分野で爆発的に普及している。
+                    確率は「頻度」なのか「信念」なのか、その哲学的論争は今も続いている。
+                </p>
+            </div>
+        </section>
+
+        <!-- Chapter 3: Logic -->
+        <section class="content-card bg-white border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
+            <h2 class="chapter-title text-slate-900 dark:text-slate-100">第3章：直感を裏切るパラドックス</h2>
+            <div class="serif-text text-xl leading-relaxed">
+                <p>
+                    人間の脳は確率を直感的に理解するのが苦手だ。そのため、確率論には多くの有名なパラドックスが存在する。
+                </p>
+
+                <h3 class="sub-section-title">モンティ・ホール問題</h3>
+                <p>
+                    3つのドアがあり、1つが当たり（車）、2つがハズレ（ヤギ）。あなたが1つ選んだ後、司会者（モンティ）が残りのドアからハズレを1つ開けて見せる。
+                    ここであなたは「ドアを変えるべきか、変えないべきか？」
+                    直感では確率はどちらも1/2に見えるが、数学的な正解は「変えると当たる確率が2倍（2/3）になる」である。
+                    この問題は多くの数学者さえも間違えさせた、条件付き確率の難問である。
+                </p>
+                
+                <h3 class="sub-section-title">ギャンブラーの誤謬</h3>
+                <p>
+                    ルーレットで「赤」が10回続いた。「次はそろそろ黒が出るはずだ」と考えるのがギャンブラーの誤謬である。
+                    独立した試行において、過去の結果は未来の確率に一切影響を与えない。
+                    サイコロに記憶はないのだ。確率は常に冷徹に、その瞬間ごとの計算を行う。
+                </p>
+
+                <!-- Trivia 3 -->
+                <div class="trivia-box">
+                    <span class="trivia-badge">
+                        豆知識：誕生日のパラドックス
+                    </span>
+                    <p class="mb-0 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                        「何人集まれば、その中に同じ誕生日のペアがいる確率が50%を超えるか？」
+                        直感的には半分（180人）くらい必要に思えるが、正解はわずか「23人」。
+                        自分と同じ誕生日を探すのではなく、「任意の誰かと誰か」のペアの数が膨大になるため、確率は急激に上昇するのだ。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 4: Modern World -->
+        <section class="content-card bg-white border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
+            <h2 class="chapter-title text-slate-900 dark:text-slate-100">第4章：量子論とAIの時代</h2>
+            <div class="serif-text text-xl leading-relaxed">
+                <p>
+                    20世紀以降、確率は「無知の結果」ではなく、「世界の根本原理」であることが判明した。
+                </p>
+
+                <h3 class="sub-section-title">量子力学と神のサイコロ</h3>
+                <p>
+                    量子力学において、電子などの微粒子はどこにあるか確定しておらず、「ここに存在する確率」として雲のように広がっている（波動関数）。
+                    観測した瞬間に初めて位置が確定する。アインシュタインはこれを嫌い「神はサイコロを振らない」と言ったが、現代の実験事実は神がサイコロを振っていることを示唆している。
+                    世界は決定論的ではなく、本質的に確率的（Probabilistic）なのである。
+                </p>
+
+                <h3 class="sub-section-title">AIと次の単語の確率</h3>
+                <p>
+                    ChatGPTなどの大規模言語モデル（LLM）は、次にくる単語を「確率的」に予測しているに過ぎない。
+                    「昔々あるところに」の次に「おじいさんが」が来る確率は高く、「iPhoneが」が来る確率は低い。
+                    膨大なデータからこの確率分布を学習することで、AIは人間のような流暢な文章を生成している。現代の知性は、確率の海の上に成り立っているのだ。
+                </p>
+                
+                <!-- Trivia 4 -->
+                <div class="trivia-box">
+                    <span class="trivia-badge">
+                        豆知識：保険と大数の法則
+                    </span>
+                    <p class="mb-0 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                        保険会社が潰れないのは、誰が事故に遭うかは予測できなくても、「10万人のうち何人が事故に遭うか」は極めて正確に予測できるからだ（大数の法則）。
+                        個人の不幸という不確実性を、集団の確率という確実性に変換してリスクを分散する。これが金融・保険システムの数学的基盤である。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="text-center py-24 bg-white rounded-3xl shadow-sm border border-slate-100 dark:bg-slate-900 dark:border-slate-800 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+            <div class="h-1 bg-indigo-100 dark:bg-indigo-900/30 w-32 mx-auto mb-12 rounded-full"></div>
+            <h2 class="text-4xl font-black mb-10 text-slate-800 dark:text-slate-100 tracking-tight">可能性の海へ</h2>
+            <p class="text-xl text-slate-500 dark:text-slate-400 max-w-3xl mx-auto serif-text leading-loose px-4">
+                絶対確実なことなど、この宇宙にはほとんど存在しない。<br>
+                しかし、確率は私たちに「未来の地図」を与えてくれる。<br>
+                リスクを計算し、最善の選択をするための羅針盤。<br>
+                不確実な世界を生き抜くための、最強の武器がここにある。
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Quiz Panel -->
+    <div id="quizPanel" class="quiz-panel fixed top-0 right-0 h-full w-full md:w-[650px] bg-white shadow-2xl z-50 flex flex-col border-l border-slate-100 dark:bg-slate-900 dark:border-slate-800">
+        <!-- Panel Header -->
+        <div class="p-8 border-b flex justify-between items-center bg-indigo-900 text-white shadow-md dark:bg-slate-950 dark:border-slate-800">
+            <div>
+                <h3 class="text-2xl font-bold flex items-center gap-3">
+                    Practice Problems
+                </h3>
+                <p class="text-xs text-indigo-200 mt-1 uppercase tracking-widest pl-0">Infinite Random Generator</p>
+            </div>
+            <div class="flex gap-2">
+                <button id="generateBtn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-sm font-bold transition-all shadow-lg border border-indigo-400 flex items-center gap-2 dark:bg-indigo-700 dark:hover:bg-indigo-600 dark:border-indigo-600 transform active:scale-95">
+                    <!-- Bootstrap Icon: shuffle -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M0 3.5A.5.5 0 0 1 .5 3H1c2.202 0 3.827 1.24 4.874 2.418.49.552.865 1.102 1.126 1.532.26-.43.636-.98 1.126-1.532C9.173 4.24 10.798 3 13 3v1c-1.798 0-3.173 1.01-4.126 2.082A9.624 9.624 0 0 0 7.556 8a9.624 9.624 0 0 0 1.317 1.918C9.828 10.99 11.204 12 13 12v1c-2.202 0-3.827-1.24-4.874-2.418A10.595 10.595 0 0 1 7 9.05c-.26.43-.636.98-1.126 1.532C4.827 11.76 3.202 13 1 13H.5a.5.5 0 0 1 0-1H1c1.798 0 3.173-1.01 4.126-2.082A9.624 9.624 0 0 0 6.444 8a9.624 9.624 0 0 0-1.317-1.918C4.172 5.01 2.796 4 1 4H.5a.5.5 0 0 1-.5-.5z"/>
+                        <path d="M13 5.466V1.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192zm0 9v-3.932a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384l-2.36 1.966a.25.25 0 0 1-.41-.192z"/>
+                    </svg>
+                    問題を生成
+                </button>
+                <button id="closeQuiz" class="p-2.5 hover:bg-indigo-800 rounded-lg transition-colors text-indigo-200 hover:text-white">
+                    <!-- Bootstrap Icon: x-lg -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Content Area -->
+        <div class="flex-1 overflow-y-auto p-8 bg-slate-50 dark:bg-slate-900 scrollbar-thin">
+            <div id="quizContainer" class="space-y-12">
+                <div class="text-center text-slate-500 dark:text-slate-400 py-32 flex flex-col items-center justify-center h-full">
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 p-8 rounded-full mb-8 animate-pulse">
+                        <!-- Bootstrap Icon: patch-check-fill -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="text-indigo-400" viewBox="0 0 16 16">
+                            <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89-.01-.622-.636zM10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                        </svg>
+                    </div>
+                    <p class="text-2xl mb-3 font-bold text-slate-700 dark:text-slate-200">準備完了</p>
+                    <p class="text-slate-500 dark:text-slate-400 max-w-xs mx-auto">右上の「問題を生成」ボタンを押して、<br>自動生成プログラムによる演習を開始してください。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-white py-24 text-center dark:bg-slate-950 dark:border-t dark:border-slate-800">
+        <p class="text-slate-500 mb-6 tracking-[0.4em] text-sm uppercase">Mathematical Archive Project</p>
+        <p class="text-sm opacity-40 serif-text italic max-w-md mx-auto leading-relaxed">
+            "God does not play dice with the universe." – Albert Einstein<br>
+            "Stop telling God what to do." – Niels Bohr
+        </p>
+    </footer>
+
+    <script>
+        // Global variables for the quiz
+        let currentQuestions = [];
+        
+        // --- 1. Math Render Logic ---
+        function renderMath() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ],
+                throwOnError: false
+            });
+        }
+
+        // --- 2. Problem Generation Algorithm (Probability) ---
+        function generateProbability() {
+            const problems = [];
+            
+            // Generate 10 random problems
+            for (let i = 0; i < 10; i++) {
+                const type = Math.random();
+                let questionText = "";
+                let targetVal = 0;
+                let explanation = "";
+                let unit = ""; 
+
+                if (type < 0.3) {
+                    // Type 1: Dice Roll (Simple Probability)
+                    // P = numerator / 6. Ask for numerator.
+                    const targetNumbers = [];
+                    const mode = Math.random(); // Even, Odd, >=k, etc.
+                    let conditionText = "";
+                    
+                    if(mode < 0.33) {
+                        conditionText = "偶数が出る";
+                        targetNumbers.push(2,4,6);
+                    } else if(mode < 0.66) {
+                        conditionText = "奇数が出る";
+                        targetNumbers.push(1,3,5);
+                    } else {
+                        const k = Math.floor(Math.random() * 4) + 2; // 2 to 5
+                        conditionText = `${k}以上の目が出る`;
+                        for(let d=k; d<=6; d++) targetNumbers.push(d);
+                    }
+                    
+                    const count = targetNumbers.length;
+                    
+                    questionText = `サイコロを1回振るとき、${conditionText}確率は $\\frac{x}{6}$ です。$x$ の値を求めなさい。`;
+                    targetVal = count;
+                    unit = "";
+                    explanation = `<strong>条件に合う目の数を数える</strong><br>
+                    ${conditionText}目は、${targetNumbers.join(', ')} の${count}通りです。<br>
+                    全事象は6通りなので、確率は $\\frac{${count}}{6}$ です。<br>
+                    よって、$x = ${count}$ となります。`;
+
+                } else if (type < 0.6) {
+                    // Type 2: Marbles/Cards (Percentage or Fraction Numerator)
+                    // Bag with R red, B blue. Prob of Red.
+                    const red = Math.floor(Math.random() * 5) + 1; // 1-5
+                    const blue = Math.floor(Math.random() * 5) + 1; // 1-5
+                    const white = Math.floor(Math.random() * 5); // 0-4
+                    const total = red + blue + white;
+                    
+                    // To keep inputs simple, let's ask for the NUMERATOR of probability (x/Total)
+                    // Or percentage if total is 10, 20, 50, 100.
+                    // Let's adjust total to be 10 for percentage questions to be clean.
+                    
+                    // Let's force total to be 10 for simplicity in this generated mode
+                    const r = Math.floor(Math.random() * 4) + 1;
+                    const b = Math.floor(Math.random() * (9-r)) + 1;
+                    const w = 10 - r - b;
+                    
+                    const targetColor = Math.random() < 0.5 ? "赤" : "青";
+                    const targetCount = targetColor === "赤" ? r : b;
+                    const percent = targetCount * 10; // (count/10)*100
+
+                    questionText = `赤玉${r}個、青玉${b}個、白玉${w}個が入った袋から、玉を1個取り出します。<br>${targetColor}玉が出る確率は何%ですか？`;
+                    targetVal = percent;
+                    unit = "%";
+                    explanation = `<strong>確率 $\\times$ 100 でパーセントを求める</strong><br>
+                    全部で10個の玉が入っています。<br>
+                    ${targetColor}玉は${targetCount}個なので、確率は $\\frac{${targetCount}}{10}$ です。<br>
+                    $\\frac{${targetCount}}{10} \\times 100 = ${percent}\\%$ となります。`;
+
+                } else if (type < 0.8) {
+                    // Type 3: Two Coins (Combinations)
+                    // Toss 2 coins. Prob of [Head, Head], [At least one Head]
+                    // 4 cases: HH, HT, TH, TT
+                    const subtype = Math.random();
+                    let cond = "";
+                    let ansCount = 0;
+                    
+                    if(subtype < 0.33) {
+                        cond = "2枚とも表になる"; // HH -> 1
+                        ansCount = 1;
+                    } else if (subtype < 0.66) {
+                        cond = "1枚が表、もう1枚が裏になる"; // HT, TH -> 2
+                        ansCount = 2;
+                    } else {
+                        cond = "少なくとも1枚は表になる"; // HH, HT, TH -> 3
+                        ansCount = 3;
+                    }
+
+                    questionText = `2枚のコインを同時に投げるとき、${cond}確率は $\\frac{x}{4}$ です。$x$ の値を求めなさい。`;
+                    targetVal = ansCount;
+                    unit = "";
+                    explanation = `<strong>樹形図で考える</strong><br>
+                    起こりうるすべての場合（全事象）は、(表,表), (表,裏), (裏,表), (裏,裏) の4通りです。<br>
+                    条件「${cond}」を満たすのは ${ansCount} 通りです。<br>
+                    よって、確率は $\\frac{${ansCount}}{4}$ となります。`;
+
+                } else {
+                    // Type 4: Independent Events (Product Rule)
+                    // Coin and Die. Total 12. P = x/12.
+                    const coinTarget = Math.random() < 0.5 ? "表" : "裏";
+                    const dieCond = Math.random() < 0.5 ? "偶数" : "3以上";
+                    let dieCount = dieCond === "偶数" ? 3 : 4; // 2,4,6 or 3,4,5,6
+                    
+                    // Total favored cases = 1 * dieCount
+                    // Probability = (1/2) * (dieCount/6) = dieCount/12
+                    
+                    questionText = `コイン1枚とサイコロ1個を同時に投げるとき、<br>コインは「${coinTarget}」が出て、かつサイコロは「${dieCond}の目」が出る確率は $\\frac{x}{12}$ です。$x$ の値を求めなさい。`;
+                    targetVal = dieCount;
+                    unit = "";
+                    explanation = `<strong>積の法則を使う</strong><br>
+                    コインが${coinTarget}になる確率は $\\frac{1}{2}$。<br>
+                    サイコロが${dieCond}になる確率は $\\frac{${dieCount}}{6}$。<br>
+                    これらは独立なので、$\\frac{1}{2} \\times \\frac{${dieCount}}{6} = \\frac{${dieCount}}{12}$ となります。`;
+                }
+
+                problems.push({
+                    id: i + 1,
+                    text: questionText,
+                    val: targetVal,
+                    explanation: explanation,
+                    unit: unit
+                });
+            }
+            
+            return problems;
+        }
+
+        // --- 3. Rendering Quiz HTML ---
+        function generateQuizHTML() {
+            currentQuestions = generateProbability();
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = ''; // Clear
+
+            currentQuestions.forEach(q => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-8 rounded-3xl border border-slate-200 shadow-sm transition-all hover:shadow-md dark:bg-slate-800 dark:border-slate-700 relative overflow-hidden";
+                
+                // Logic to show "応用問題" badge if unit exists (simple check for complexity markers if any)
+                const badgeHtml = ''; // Can add logic later if needed
+                const displayUnit = q.unit || "";
+
+                card.innerHTML = `
+                    <div class="absolute top-0 left-0 w-2 h-full bg-indigo-500"></div>
+                    <div class="flex items-center gap-3 mb-5">
+                        <span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 font-bold px-4 py-1.5 rounded-full text-sm tracking-wide">Q.${q.id}</span>
+                        ${badgeHtml}
+                    </div>
+                    <div class="text-slate-800 dark:text-slate-200 mb-8 text-lg leading-relaxed font-medium serif-text">
+                        ${q.text}
+                    </div>
+                    <div class="flex gap-4 items-center mb-6">
+                        <input type="number" id="q${q.id}-input" class="quiz-input w-full p-4 border-2 border-slate-200 rounded-2xl font-bold text-xl text-slate-700 placeholder-slate-300 dark:bg-slate-900 dark:border-slate-600 dark:text-slate-100" placeholder="答えを入力" step="1">
+                        <span class="font-bold text-slate-400 text-xl whitespace-nowrap">${displayUnit}</span>
+                    </div>
+                    <button onclick="checkAnswer(${q.id})" class="group w-full bg-slate-800 text-white font-bold py-4 rounded-2xl hover:bg-slate-700 transition-all shadow-lg shadow-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:shadow-none flex items-center justify-center gap-2">
+                        <span>答え合わせ</span>
+                        <!-- Bootstrap Icon: arrow-right-circle -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="opacity-50 group-hover:opacity-100 transition-opacity" viewBox="0 0 16 16">
+                           <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                        </svg>
+                    </button>
+                    
+                    <div id="q${q.id}-feedback" class="feedback-box bg-slate-100 dark:bg-slate-900/50"></div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Re-render MathJax/KaTeX for the new content
+            renderMath();
+        }
+
+        // --- 4. Validation Logic ---
+        function checkAnswer(qId) {
+            // qId is 1-based index
+            const data = currentQuestions[qId - 1];
+            const input = document.getElementById(`q${qId}-input`);
+            const feedback = document.getElementById(`q${qId}-feedback`);
+            const userVal = parseFloat(input.value);
+
+            feedback.style.display = 'block';
+            input.classList.remove('correct-answer', 'incorrect-answer');
+
+            // Exact match for integers/decimals
+            if (userVal === data.val) {
+                // Correct
+                input.classList.add('correct-answer');
+                feedback.innerHTML = `
+                    <div class="text-green-700 dark:text-green-400 font-bold text-lg mb-3 flex items-center gap-2">
+                        <!-- Bootstrap Icon: check-circle-fill -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                        </svg>
+                        正解です！
+                    </div>
+                    <div class="mt-3 bg-white dark:bg-slate-800 p-5 rounded-2xl border border-green-200 dark:border-green-800 text-slate-700 dark:text-slate-300 shadow-sm leading-relaxed">
+                        <strong class="text-green-800 dark:text-green-300 block mb-2 text-sm uppercase tracking-wider">Solution</strong>
+                        ${data.explanation}
+                    </div>
+                `;
+                feedback.className = "feedback-box bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800";
+            } else {
+                // Incorrect
+                input.classList.add('incorrect-answer');
+                const displayUnit = data.unit || "";
+                
+                feedback.innerHTML = `
+                    <div class="text-red-700 dark:text-red-400 font-bold text-lg mb-3 flex items-center gap-2">
+                        <!-- Bootstrap Icon: x-circle-fill -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                        </svg>
+                        不正解です...
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 mb-4 text-sm">数え間違えがあるかもしれません。全事象と特定の事象の数を確認しましょう。</p>
+                    <div class="pt-4 border-t border-red-200 dark:border-red-800">
+                        <button onclick="document.getElementById('reveal-${qId}').classList.remove('hidden')" class="text-red-600 dark:text-red-400 font-bold text-sm hover:text-red-800 dark:hover:text-red-300 underline decoration-2 underline-offset-4">
+                            答えと解説を見る
+                        </button>
+                        <div id="reveal-${qId}" class="hidden mt-4 bg-white dark:bg-slate-800 p-5 rounded-2xl border border-red-200 dark:border-red-800 text-slate-700 dark:text-slate-300 shadow-sm leading-relaxed">
+                             <div class="mb-3 text-lg font-bold text-red-700 dark:text-red-400 border-b border-red-100 dark:border-red-900 pb-2">正解：${data.val} ${displayUnit}</div>
+                             <div class="text-sm">${data.explanation}</div>
+                        </div>
+                    </div>
+                `;
+                feedback.className = "feedback-box bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-800";
+            }
+            renderMath(); // Re-render math in feedback
+        }
+
+        // --- 5. Event Listeners ---
+        const quizTrigger = document.getElementById('quizTrigger');
+        const quizPanel = document.getElementById('quizPanel');
+        const closeQuiz = document.getElementById('closeQuiz');
+        const generateBtn = document.getElementById('generateBtn');
+
+        quizTrigger.addEventListener('click', () => {
+            quizPanel.classList.add('active');
+            if (currentQuestions.length === 0) {
+                // Initial prompt is shown, user clicks generate
+            }
+        });
+
+        closeQuiz.addEventListener('click', () => {
+            quizPanel.classList.remove('active');
+        });
+
+        generateBtn.addEventListener('click', () => {
+            generateQuizHTML();
+            const container = document.getElementById('quizContainer');
+            if (container) container.scrollTop = 0;
+        });
+
+        // Initialize KaTeX on load
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMath();
+        });
+    </script>
+</body>
+</html>
