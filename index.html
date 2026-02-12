@@ -446,7 +446,7 @@
 
                         <!-- Set A (Even Numbers) Circle -->
                         <!-- Adjusted to cover the bottom row (Even numbers) -->
-                        <div class="absolute w-64 h-24 border-4 border-indigo-500/30 bg-indigo-500/5 rounded-full flex items-center justify-center transform translate-y-12 pointer-events-none">
+                        <div class="absolute w-64 h-24 border-4 border-indigo-500/30 bg-indigo-500/5 rounded-full flex items-center justify-center transform translate-y-[48px] pointer-events-none">
                             <span class="absolute -top-6 text-indigo-600 dark:text-indigo-400 font-bold bg-white dark:bg-slate-900 px-2 rounded">事象 $A$ (偶数)</span>
                         </div>
 
@@ -498,7 +498,7 @@
                         数え上げの原則：樹形図
                     </p>
                     <div class="pl-4 border-l-2 border-indigo-200 dark:border-indigo-700 mb-6">
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
                             公式に頼る前に、まずは「もれなく、ダブりなく」数え上げるのが基本。そのための最強ツールが樹形図だ。
                         </p>
                         <p class="text-sm text-slate-600 dark:text-slate-400">
@@ -658,70 +658,6 @@
             </div>
         </section>
 
-        
-        <!-- Simulation Tool: Interactive Tool -->
-        <section class="content-card bg-white border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
-            <h2 class="chapter-title text-slate-900 dark:text-slate-100">可能性の空間（サンプルスペース）</h2>
-            <div class="serif-text">
-                <p class="mb-8">
-                    確率は、すべての可能性（全事象）の中で、特定の出来事（事象）が占める「割合」である。サイコロを振ったときの「偶数の目が出る確率」を視覚的に確認してみよう。
-                </p>
-                
-                <div class="diagram-box bg-slate-50 dark:bg-slate-950 p-10 rounded-3xl border border-slate-200 dark:border-slate-800">
-                    <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800">
-                        <!-- Sample Space Container -->
-                        <div class="relative border-2 border-slate-200 dark:border-slate-700 rounded-2xl p-12 mb-8 min-h-[300px] flex items-center justify-center">
-                            <span class="absolute top-4 left-6 text-xs font-bold text-slate-400 uppercase tracking-widest">全事象 U (Total Outcomes)</span>
-                            
-                            <!-- Dots Grid -->
-                            <div class="grid grid-cols-3 gap-x-24 gap-y-16 relative">
-                                <!-- Event A Circle (The highlight) -->
-                                <div class="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[120px] border-4 border-indigo-500/30 bg-indigo-500/10 rounded-full flex items-center justify-center pointer-events-none">
-                                    <span class="absolute -top-8 text-indigo-600 dark:text-indigo-400 font-bold text-sm bg-white dark:bg-slate-900 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-900 shadow-sm">事象 A (偶数)</span>
-                                </div>
-                                
-                                <!-- Outcome 1 -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-4 h-4 bg-slate-300 dark:bg-slate-600 rounded-full shadow-sm"></div>
-                                </div>
-                                <!-- Outcome 2 (Even) -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-4 h-4 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
-                                </div>
-                                <!-- Outcome 3 -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-4 h-4 bg-slate-300 dark:bg-slate-600 rounded-full shadow-sm"></div>
-                                </div>
-                                <!-- Outcome 4 (Even) -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-4 h-4 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
-                                </div>
-                                <!-- Outcome 5 -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-4 h-4 bg-slate-300 dark:bg-slate-600 rounded-full shadow-sm"></div>
-                                </div>
-                                <!-- Outcome 6 (Even) -->
-                                <div class="flex flex-col items-center gap-2">
-                                    <div class="w-4 h-4 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="text-center space-y-4">
-                            <p class="text-sm text-slate-500 dark:text-slate-400 italic leading-relaxed">
-                                全事象（6通り）の中で、偶数が出る事象（2, 4, 6の青い点）は3通り。<br>
-                                確率は、この「領域の広さの比率」として視覚化できる。
-                            </p>
-                            <div class="inline-block px-8 py-4 bg-slate-900 text-white rounded-2xl">
-                                <span class="text-xs opacity-50 block mb-1">計算式</span>
-                                <span class="text-2xl font-serif">P(A) = 3 / 6 = 0.5 (50%)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Summary -->
         <section class="text-center py-24 bg-white rounded-3xl shadow-sm border border-slate-100 dark:bg-slate-900 dark:border-slate-800 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
@@ -874,7 +810,7 @@
                     explanation = `<strong>確率 $\\times$ 100 でパーセントを求める</strong><br>
                     全部で10個の玉が入っています。<br>
                     ${targetColor}玉は${targetCount}個なので、確率は $\\frac{${targetCount}}{10}$ です。<br>
-                    $\\frac{${targetCount}}{10} \\times 100 = ${percent}\\%$ となります。`;
+                    パーセントに直すと $\\frac{${targetCount}}{10} \\times 100 = ${percent}\\%$ となります。`;
 
                 } else if (type < 0.8) {
                     // Type 3: Two Coins (Combinations)
@@ -1069,4 +1005,3 @@
     </script>
 </body>
 </html>
-  
